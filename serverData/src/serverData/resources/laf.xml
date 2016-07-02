@@ -1,0 +1,12 @@
+<synth>
+  <style id="basicStyle">
+    <font name="Verdana" size="16"/>
+    <state>
+      <color value="BLACK " type="BACKGROUND"/>
+      <color value="WHITE" type="FOREGROUND"/>
+    </state>
+  </style>
+  <bind style="basicStyle" type="region" key=".*"/>
+
+
+</synth>
