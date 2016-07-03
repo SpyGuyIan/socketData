@@ -106,6 +106,7 @@ public class console {
      //TODO make event listener for sending command
     
     
+    
     public void setPrefix(String p){
     	prefix.setText(p + "> ");
     }
@@ -129,6 +130,8 @@ public class console {
     public void maximize(){
     	frame.setState(Frame.NORMAL);
     }
+    
+    
     
     public static void main(String[] args){
 	new console();
