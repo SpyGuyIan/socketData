@@ -16,8 +16,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
+
 import java.io.File;
 import java.util.ArrayList;
+
+interface commandListener {
+    void commandEntered();
+}
 
 public class console {
 
@@ -32,7 +37,8 @@ public class console {
 	private Font font;
 	StyledDocument doc;
 	Style style;
-	//private JScrollBar scrollVBar;
+	private ArrayList<commandListener> listeners = new ArrayList<commandListener>();
+
 
 	public console(){
 		createGui();
@@ -45,50 +51,46 @@ public class console {
 		//TODO make log file
 	}
 
+    public void addCommandListener(commandListener toAdd) {
+        listeners.add(toAdd);
+    }
+
 	private void addListeners(){
 		//add a Component listener to look of resize
 		frame.addComponentListener(new ComponentListener() {
 			public void componentResized(ComponentEvent e) {
-				refreshHistory();          
+				drawHistory();          
 			}
 
 			@Override
-			public void componentHidden(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
+			public void componentHidden(ComponentEvent arg0){}
 			@Override
-			public void componentMoved(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
+			public void componentMoved(ComponentEvent arg0){}
 			@Override
-			public void componentShown(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
+			public void componentShown(ComponentEvent arg0){}
 		});
 
 		inputLine.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {		
-				addLine(inputLine.getText(), Color.RED, true);//TODO make this up to the user class for more variable situations(setAutoAddLine function??)
+				//addLine(inputLine.getText(), Color.WHITE, true);//text for making it echo
 				lastCommand = inputLine.getText(); 
 				inputLine.setText("");
+				commandEntered();
 			}
-
 		});
-
 	}
 
+	private void commandEntered() {
+		for (commandListener hl : listeners)
+            hl.commandEntered();
+	} 
+		
 	private void createGui(){
-
+		//TODO make scroll bar look nice with synth look and feel and laf.xml
 		//SynthLookAndFeel laf = new SynthLookAndFeel();
 		//try { laf.load(console.class.getResourceAsStream("laf.xml"), console.class);}
 		//catch(ParseException e1) {e1.printStackTrace();}
-
 		//try { UIManager.setLookAndFeel(laf);} 
 		//catch( UnsupportedLookAndFeelException e) {e.printStackTrace();}
 
@@ -102,7 +104,6 @@ public class console {
 		panel.setBackground(Color.BLACK);
 		panel.setLayout(layout);
 
-		//font = new Font(Font.MONOSPACED, Font.PLAIN, 14);
 		font = new Font("Consolas", Font.PLAIN, 16);
 
 		prefix = new JLabel();
@@ -112,7 +113,7 @@ public class console {
 		prefix.setFont(font);
 
 		inputLine = new JTextField();
-		inputLine.setText("");//.getText();
+		inputLine.setText("");
 		inputLine.setColumns(1);
 		inputLine.setBackground(Color.BLACK);
 		inputLine.setForeground(Color.WHITE);
@@ -121,19 +122,14 @@ public class console {
 
 		history = new JTextPane();
 		history.setEditable(false);
-		//history.setText("TEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\nTEXTS\n");
 		history.setText("");
 		history.setForeground(Color.WHITE);
 		history.setBackground(Color.BLACK);
-		//history.setColumns(50);
-		//history.setLineWrap(true);
 		history.setFont(font);
 
 		doc = history.getStyledDocument();
 		style = history.addStyle("I'm a Style", null);
 		StyleConstants.setForeground(style, Color.WHITE);
-
-
 
 		scrollV = new JScrollPane(history);
 		scrollV.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -141,12 +137,8 @@ public class console {
 		scrollV.setBorder(BorderFactory.createEmptyBorder());
 		scrollV.setForeground(Color.WHITE);
 		scrollV.setBackground(Color.BLACK);
-		//scrollV.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		//TODO make
 
-		//scrollVBar = scrollV.getVerticalScrollBar();
-		//scrollVBar.setValue(scrollVBar.getMaximum());
-
+		
 		//Positioning of the scroll bar
 		layout.putConstraint(SpringLayout.EAST, scrollV, 0, SpringLayout.EAST, panel);
 		layout.putConstraint(SpringLayout.NORTH, scrollV, 0, SpringLayout.NORTH, panel);
@@ -168,7 +160,6 @@ public class console {
 		panel.add(scrollV);
 		panel.add(prefix);
 		panel.add(inputLine);
-		//panel.add(history);
 		frame.add(panel);
 		frame.setVisible(true);
 
@@ -180,13 +171,18 @@ public class console {
 		}else{
 			historyList.add(new message(command, c, new mFormat()));
 		}
+		drawHistory();
+	}
+
+	public void addCustomLine(message msg, boolean usePrefix){
+		historyList.add(msg);
+		drawHistory();
+	}
+	
+	public void drawHistory(){
 		if(historyList.size() > 50 ){
 			historyList.remove(0);
 		}
-		refreshHistory();
-	}
-
-	public void refreshHistory(){
 		history.setText("");
 		for(message ln : historyList){
 			for(mChar ch : ln.mCharList){
