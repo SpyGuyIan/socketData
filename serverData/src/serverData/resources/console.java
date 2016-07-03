@@ -1,7 +1,9 @@
 package serverData.resources;
 
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.event.WindowEvent;
 
 public class console {
 
@@ -11,13 +13,19 @@ public class console {
     private JTextField inputLine;
     private JTextArea history;//TODO make this do stuff
     private JScrollPane scrollV;
-    private JScrollBar scrollVBar;
+    //private JScrollBar scrollVBar;
     
     public console(){
 	createGui();
-
+    }
+    
+    public console(String logFile){//TODO specify URL aswell
+    createGui();
+    //TODO make log file
     }
 
+    
+    
     private void createGui(){
 
 	//SynthLookAndFeel laf = new SynthLookAndFeel();
@@ -38,7 +46,7 @@ public class console {
 	panel.setLayout(layout);
 
 	prefix = new JLabel();
-	prefix.setText("Server> ");
+	prefix.setText("Console> ");
 	prefix.setForeground(Color.WHITE);
 	prefix.setBackground(Color.BLACK);
 
@@ -95,8 +103,33 @@ public class console {
 	frame.setVisible(true);
     }
 
+     //TODO make event listener for sending command
+    
+    
+    public void setPrefix(String p){
+    	prefix.setText(p + "> ");
+    }
 
+    public void clear(){
+    	history.setText("");
+    }
 
+    public void setScrollVisibility(boolean visibility){
+    	scrollV.setVisible(visibility);
+    }
+    
+    public void close(){
+    	frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+    }
+    
+    public void minimize(){
+    	frame.setState(Frame.ICONIFIED);
+    }
+    
+    public void maximize(){
+    	frame.setState(Frame.NORMAL);
+    }
+    
     public static void main(String[] args){
 	new console();
     }
