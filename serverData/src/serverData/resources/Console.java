@@ -10,6 +10,9 @@ import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,7 +26,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -53,11 +58,13 @@ public class Console{
 	public Console(){
 		createGui();
 		addListeners();
+		redirectSystemStreams();
 	}
 	
 	public Console(File file){
 		createGui();
 		addListeners();
+		redirectSystemStreams();
 		try {
 			pw = new PrintWriter(file);
 		} catch (FileNotFoundException e) {
@@ -106,7 +113,9 @@ public class Console{
 	
 	private void addHistory(Message msg) {
 		historyList.add(msg);
-		pw.println(msg.getText());
+		try {
+			pw.println(msg.getText());
+		} catch(NullPointerException e) {}
 	}
 	
 	public String inString() {
@@ -273,7 +282,9 @@ public class Console{
 	}
 
 	public void close(){
-		pw.close();
+		//try {
+			pw.close();
+		//} catch(NullPointerException e) {}
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 
@@ -285,5 +296,40 @@ public class Console{
 		frame.setState(Frame.NORMAL);
 	}
 
+	private void updateTextPane(final String text) {
+		  SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+		      Document doc = history.getDocument();
+		      try {
+		        doc.insertString(doc.getLength(), text, null);
+		      } catch (BadLocationException e) {
+		        throw new RuntimeException(e);
+		      }
+		      history.setCaretPosition(doc.getLength() - 1);
+		    }
+		  });
+		}
+		 
+		private void redirectSystemStreams() {
+		  OutputStream out = new OutputStream() {
+		    @Override
+		    public void write(final int b) throws IOException {
+		      updateTextPane(String.valueOf((char) b));
+		    }
+		 
+		    @Override
+		    public void write(byte[] b, int off, int len) throws IOException {
+		      updateTextPane(new String(b, off, len));
+		    }
+		 
+		    @Override
+		    public void write(byte[] b) throws IOException {
+		      write(b, 0, b.length);
+		    }
+		  };
+		 
+		  System.setOut(new PrintStream(out, true));
+		  System.setErr(new PrintStream(out, true));
+		}
 
 }
