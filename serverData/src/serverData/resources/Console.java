@@ -53,13 +53,18 @@ public class Console{
 	public Console(){
 		createGui();
 		addListeners();
+	}
+	
+	public Console(File file){
+		createGui();
+		addListeners();
 		try {
-			pw = new PrintWriter(new File("log.txt"));
+			pw = new PrintWriter(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void addCommandListener(commandListener toAdd) {
 		listeners.add(toAdd);
 	}
