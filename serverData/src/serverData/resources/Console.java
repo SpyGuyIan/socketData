@@ -48,9 +48,9 @@ public class Console{
 	private String lastCommand = "";
 	private ArrayList<Message> historyList = new ArrayList<Message>(); 
 	private Font font;
+	private ArrayList<commandListener> listeners = new ArrayList<commandListener>();
 	StyledDocument doc;
 	Style style;
-	private ArrayList<commandListener> listeners = new ArrayList<commandListener>();
 	final List<String> holder = new LinkedList<String>();
 	PrintWriter pw;
 
@@ -165,6 +165,7 @@ public class Console{
 		inputLine.setForeground(Color.WHITE);
 		inputLine.setBorder(BorderFactory.createEmptyBorder());
 		inputLine.setFont(font);
+		inputLine.setCaretColor(Color.WHITE);
 
 		history = new JTextPane();
 		history.setEditable(false);
@@ -299,13 +300,8 @@ public class Console{
 	private void updateTextPane(final String text) {
 		  SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
-		      Document doc = history.getDocument();
-		      try {
-		        doc.insertString(doc.getLength(), text, null);
-		      } catch (BadLocationException e) {
-		        throw new RuntimeException(e);
-		      }
-		      history.setCaretPosition(doc.getLength() - 1);
+		      addHistory(new Message(text, Color.RED, new mFormat()));
+		      drawHistory();
 		    }
 		  });
 		}
