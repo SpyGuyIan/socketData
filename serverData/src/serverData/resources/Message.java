@@ -39,17 +39,17 @@ class mChar {
 }
 
 
-public class message {
+public class Message {
 
 	public ArrayList<mChar> mCharList = new ArrayList<mChar>();
 
-	public message(String message, Color c, mFormat format) {
+	public Message(String message, Color c, mFormat format) {
 		for (int i = 0; i < message.length(); i++) {
 			mCharList.add(new mChar(message.charAt(i), c, format));// for the console
 		}
 	}
 
-	public message append(message msg){
+	public Message append(Message msg){
 		mCharList.addAll(msg.mCharList);
 		return this;
 	}

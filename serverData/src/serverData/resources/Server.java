@@ -4,13 +4,13 @@ import java.io.*;
 import java.net.*;
 
 
-public class server {
+public class Server {
 	ObjectOutputStream out;
 	ObjectInputStream in;
 	ServerSocket server;
 	Socket s;
 
-	public server() {
+	public Server() {
 		System.out.println("Server init");
 
 	}

@@ -1,30 +1,34 @@
-
+//TODO make it be able to be put into a scanner?
 package serverData.resources;
 
-import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
-
-import java.io.File;
 import java.util.ArrayList;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.SpringLayout;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 interface commandListener {
     void commandEntered();
 }
 
-public class console {
+public class Console {
 
 	private JFrame frame;
 	private JPanel panel;
@@ -33,24 +37,24 @@ public class console {
 	private JTextPane history;//TODO make this do stuff
 	private JScrollPane scrollV;
 	private String lastCommand = "";
-	private ArrayList<message> historyList = new ArrayList<message>(); 
+	private ArrayList<Message> historyList = new ArrayList<Message>(); 
 	private Font font;
 	StyledDocument doc;
 	Style style;
 	private ArrayList<commandListener> listeners = new ArrayList<commandListener>();
 
 
-	public console(){
+	public Console(){
 		createGui();
 		addListeners();
 	}
 
-	public console(File logFile){//TODO specify URL aswell
-		createGui();
-		addListeners();
-		//TODO make log file
+	public String inString(){
+		
+		
+		return "";
 	}
-
+	
     public void addCommandListener(commandListener toAdd) {
         listeners.add(toAdd);
     }
@@ -165,18 +169,35 @@ public class console {
 
 	}
 
-	public void addLine(String command, Color c, boolean usePrefix){
+	public void println(String command, Color c, boolean usePrefix){
 		if(usePrefix){
-			historyList.add(new message(prefix.getText(), Color.WHITE, new mFormat()).append(new message(command, c, new mFormat())));
+			historyList.add(new Message(prefix.getText(), Color.WHITE, new mFormat()).append(new Message(command, c, new mFormat())));
 		}else{
-			historyList.add(new message(command, c, new mFormat()));
+			historyList.add(new Message(command, c, new mFormat()));
 		}
 		drawHistory();
 	}
 
-	public void addCustomLine(message msg, boolean usePrefix){
+	public void println(Message msg, boolean usePrefix){
+		if(usePrefix){
+			historyList.add(new Message(prefix.getText(), Color.WHITE, new mFormat()).append(msg));
+		}else{
+			historyList.add(msg);
+		}
+		drawHistory();
+	}
+	
+	public void println(Message msg){
 		historyList.add(msg);
 		drawHistory();
+	}
+	
+	public void println(String s){
+		historyList.add(new Message(s, Color.WHITE, new mFormat()));
+	}
+	
+	public void println(String s, Color c){
+		historyList.add(new Message(s, c, new mFormat()));
 	}
 	
 	public void drawHistory(){
@@ -184,7 +205,7 @@ public class console {
 			historyList.remove(0);
 		}
 		history.setText("");
-		for(message ln : historyList){
+		for(Message ln : historyList){
 			for(mChar ch : ln.mCharList){
 				
 				StyleConstants.setBold(style, ch.format.bold);
@@ -228,10 +249,6 @@ public class console {
 
 	public void maximize(){
 		frame.setState(Frame.NORMAL);
-	}
-
-	public static void main(String[] args){
-		new console();
 	}
 
 }

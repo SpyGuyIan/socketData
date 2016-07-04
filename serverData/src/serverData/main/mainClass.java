@@ -1,38 +1,40 @@
 package serverData.main;
 
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.Scanner;
 
 
-import serverData.resources.server;
+
+
+import serverData.resources.Console;
+import serverData.resources.Server;
 
 public class mainClass {
-    int port = 3000;
+	int port = 3000;
+	Console console = new Console();
 
-    public mainClass() {// Runs when class called
-	// Scanner input = new Scanner(System.in);
-	// System.out.println("Input port: ");
-	// port = input.nextInt();
-	// input.nextLine();
-	// input.close();
+	public mainClass() {
+		// Scanner input = new Scanner(System.in);
+		// System.out.println("Input port: ");
+		// port = input.nextInt();
+		// input.nextLine();
+		// input.close();
 
-	System.out.println("Server opening...");
-	server myServer = new server();
-	myServer.init(port);
+		console.println("Server opening...", Color.BLUE, false);
+		Server myServer = new Server();
+		myServer.init(port);
 
-	Scanner input = new Scanner(System.in);
-	try {
-	    if (myServer.readString() == "Ping!") {
-		System.out.println("Server: Ping recieved.");
-		System.out.println("Server: Ponging client...");
-		myServer.sendString("Pong!");
-	    }
-	} catch (IOException e) {
+		try {
+			if (myServer.readString() == "Ping!") {
+				console.println("Server: Ping recieved.", Color.BLUE, false);
+				console.println("Server: Ponging client..." , Color.BLUE, false);
+				myServer.sendString("Pong!");
+			}
+		} catch (IOException e) {
+		}
+		myServer.close();
 	}
-	myServer.close();
-	input.close();
-
-    }
 
 }
