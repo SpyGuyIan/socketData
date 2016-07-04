@@ -32,7 +32,7 @@ interface commandListener {
 	void commandEntered();
 }
 
-public class Console implements Readable{
+public class Console{
 
 	private JFrame frame;
 	private JPanel panel;
@@ -52,12 +52,6 @@ public class Console implements Readable{
 	public Console(){
 		createGui();
 		addListeners();
-	}
-
-	public String inString(){
-
-
-		return "";
 	}
 
 	public void addCommandListener(commandListener toAdd) {
@@ -85,11 +79,11 @@ public class Console implements Readable{
 				//addLine(inputLine.getText(), Color.WHITE, true);//text for making it echo
 				lastCommand = inputLine.getText(); 
 				inputLine.setText("");
+				commandEntered();
 				synchronized (holder) {
 					holder.add(lastCommand);
 	                holder.notify();
 				}
-				//commandEntered();
 			}
 		});
 	}
@@ -99,7 +93,7 @@ public class Console implements Readable{
 			hl.commandEntered();
 	} 
 	
-	public String nextLine() {
+	public String inString() {
 		synchronized (holder) {
 			while (holder.isEmpty())
 				try {
@@ -275,10 +269,5 @@ public class Console implements Readable{
 		frame.setState(Frame.NORMAL);
 	}
 
-	@Override
-	public int read(CharBuffer cb) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 }
