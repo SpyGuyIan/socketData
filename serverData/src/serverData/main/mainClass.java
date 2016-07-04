@@ -23,18 +23,22 @@ public class mainClass {
 		// input.close();
 
 		console.println("Server opening...", Color.BLUE, false);
+		console.println("Enter your name", Color.WHITE, true);
+		String name = console.nextLine();
+		console.println("Hello " + name + "!", Color.WHITE, true);
+		
 		Server myServer = new Server();
 		myServer.init(port);
-
-		try {
-			if (myServer.readString() == "Ping!") {
-				console.println("Server: Ping recieved.", Color.BLUE, false);
-				console.println("Server: Ponging client..." , Color.BLUE, false);
-				myServer.sendString("Pong!");
-			}
-		} catch (IOException e) {
-		}
-		myServer.close();
+//		
+//		try {
+//			if (myServer.readString() == "Ping!") {
+//				console.println("Server: Ping recieved.", Color.BLUE, false);
+//				console.println("Server: Ponging client..." , Color.BLUE, false);
+//				myServer.sendString("Pong!");
+//			}
+//		} catch (IOException e) {
+//		}
+//		myServer.close();
 	}
 
 }
