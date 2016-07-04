@@ -1,4 +1,3 @@
-//TODO make it be able to be put into a scanner?
 package serverData.resources;
 
 import java.awt.Color;
@@ -9,7 +8,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -32,7 +34,7 @@ interface commandListener {
 	void commandEntered();
 }
 
-public class Console implements Readable{
+public class Console {
 
 	private JFrame frame;
 	private JPanel panel;
@@ -47,11 +49,19 @@ public class Console implements Readable{
 	Style style;
 	private ArrayList<commandListener> listeners = new ArrayList<commandListener>();
 	final List<String> holder = new LinkedList<String>();
+	PrintWriter pw;
 
 
 	public Console(){
 		createGui();
 		addListeners();
+		try {
+			pw = new PrintWriter(new File("log.txt"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		pw.println("I'm working I promise");
+		System.out.println("printed to printwriter");
 	}
 
 	public String inString(){
@@ -89,7 +99,7 @@ public class Console implements Readable{
 					holder.add(lastCommand);
 	                holder.notify();
 				}
-				//commandEntered();
+				commandEntered();
 			}
 		});
 	}
@@ -105,7 +115,6 @@ public class Console implements Readable{
 				try {
 					holder.wait();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -195,33 +204,38 @@ public class Console implements Readable{
 
 	public void println(String command, Color c, boolean usePrefix){
 		if(usePrefix){
-			historyList.add(new Message(prefix.getText(), Color.WHITE, new mFormat()).append(new Message(command, c, new mFormat())));
+			addHistory(new Message(prefix.getText(), Color.WHITE, new mFormat()).append(new Message(command, c, new mFormat())));
 		}else{
-			historyList.add(new Message(command, c, new mFormat()));
+			addHistory(new Message(command, c, new mFormat()));
 		}
 		drawHistory();
 	}
 
 	public void println(Message msg, boolean usePrefix){
 		if(usePrefix){
-			historyList.add(new Message(prefix.getText(), Color.WHITE, new mFormat()).append(msg));
+			addHistory(new Message(prefix.getText(), Color.WHITE, new mFormat()).append(msg));
 		}else{
-			historyList.add(msg);
+			addHistory(msg);
 		}
 		drawHistory();
 	}
 
 	public void println(Message msg){
-		historyList.add(msg);
+		addHistory(msg);
 		drawHistory();
 	}
 
 	public void println(String s){
-		historyList.add(new Message(s, Color.WHITE, new mFormat()));
+		addHistory(new Message(s, Color.WHITE, new mFormat()));
 	}
 
 	public void println(String s, Color c){
-		historyList.add(new Message(s, c, new mFormat()));
+		addHistory(new Message(s, c, new mFormat()));
+	}
+	
+	private void addHistory(Message msg) {
+		historyList.add(msg);
+		pw.println(msg.getText());
 	}
 
 	public void drawHistory(){
@@ -264,6 +278,7 @@ public class Console implements Readable{
 	}
 
 	public void close(){
+		pw.close();
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 
@@ -274,11 +289,4 @@ public class Console implements Readable{
 	public void maximize(){
 		frame.setState(Frame.NORMAL);
 	}
-
-	@Override
-	public int read(CharBuffer cb) throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

@@ -53,5 +53,13 @@ public class Message {
 		mCharList.addAll(msg.mCharList);
 		return this;
 	}
+	
+	public String getText() {
+		String text = "";
+		for(mChar c : mCharList) {
+			text += c.charValue;
+		}
+		return text;
+	}
 
 }

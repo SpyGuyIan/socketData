@@ -26,6 +26,7 @@ public class mainClass {
 		console.println("Enter your name", Color.WHITE, true);
 		String name = console.nextLine();
 		console.println("Hello " + name + "!", Color.WHITE, true);
+		console.close();
 		
 		Server myServer = new Server();
 		myServer.init(port);

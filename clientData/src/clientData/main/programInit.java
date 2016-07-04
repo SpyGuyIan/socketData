@@ -1,11 +1,11 @@
 package clientData.main;
 
-import clientData.GUI.Game;
+import clientData.GUI.Frame;
 
 public class programInit {
 	
 	public static void main(String[] args) {
-		Game ex = new Game();
+		Frame ex = new Frame();
 		ex.setVisible(true);
 		new mainClass();
 	}
