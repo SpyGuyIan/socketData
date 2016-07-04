@@ -58,6 +58,11 @@ public class Console{
 	public Console(){
 		createGui();
 		addListeners();
+	}
+	
+	public Console(boolean debug){
+		createGui();
+		addListeners();
 		redirectSystemStreams();
 	}
 	
