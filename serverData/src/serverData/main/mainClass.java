@@ -24,7 +24,7 @@ public class mainClass {
 
 		console.println("Server opening...", Color.BLUE, false);
 		console.println("Enter your name", Color.WHITE, true);
-		String name = console.nextLine();
+		String name = console.inString();
 		console.println("Hello " + name + "!", Color.WHITE, true);
 		console.close();
 		

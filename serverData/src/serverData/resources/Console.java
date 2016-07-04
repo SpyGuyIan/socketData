@@ -10,9 +10,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,13 +32,13 @@ interface commandListener {
 	void commandEntered();
 }
 
-public class Console {
+public class Console{
 
 	private JFrame frame;
 	private JPanel panel;
 	private JLabel prefix;
 	private JTextField inputLine;
-	private JTextPane history;//TODO make this do stuff
+	private JTextPane history;
 	private JScrollPane scrollV;
 	private String lastCommand = "";
 	private ArrayList<Message> historyList = new ArrayList<Message>(); 
@@ -60,14 +58,6 @@ public class Console {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		pw.println("I'm working I promise");
-		System.out.println("printed to printwriter");
-	}
-
-	public String inString(){
-
-
-		return "";
 	}
 
 	public void addCommandListener(commandListener toAdd) {
@@ -95,11 +85,11 @@ public class Console {
 				//addLine(inputLine.getText(), Color.WHITE, true);//text for making it echo
 				lastCommand = inputLine.getText(); 
 				inputLine.setText("");
+				commandEntered();
 				synchronized (holder) {
 					holder.add(lastCommand);
 	                holder.notify();
 				}
-				commandEntered();
 			}
 		});
 	}
@@ -109,7 +99,12 @@ public class Console {
 			hl.commandEntered();
 	} 
 	
-	public String nextLine() {
+	private void addHistory(Message msg) {
+		historyList.add(msg);
+		pw.println(msg.getText());
+	}
+	
+	public String inString() {
 		synchronized (holder) {
 			while (holder.isEmpty())
 				try {
@@ -232,11 +227,6 @@ public class Console {
 	public void println(String s, Color c){
 		addHistory(new Message(s, c, new mFormat()));
 	}
-	
-	private void addHistory(Message msg) {
-		historyList.add(msg);
-		pw.println(msg.getText());
-	}
 
 	public void drawHistory(){
 		if(historyList.size() > 50 ){
@@ -289,4 +279,6 @@ public class Console {
 	public void maximize(){
 		frame.setState(Frame.NORMAL);
 	}
+
+
 }
