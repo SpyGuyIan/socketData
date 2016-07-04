@@ -9,7 +9,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -25,10 +29,10 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 interface commandListener {
-    void commandEntered();
+	void commandEntered();
 }
 
-public class Console {
+public class Console implements Readable{
 
 	private JFrame frame;
 	private JPanel panel;
@@ -42,6 +46,7 @@ public class Console {
 	StyledDocument doc;
 	Style style;
 	private ArrayList<commandListener> listeners = new ArrayList<commandListener>();
+	final List<String> holder = new LinkedList<String>();
 
 
 	public Console(){
@@ -50,14 +55,14 @@ public class Console {
 	}
 
 	public String inString(){
-		
-		
+
+
 		return "";
 	}
-	
-    public void addCommandListener(commandListener toAdd) {
-        listeners.add(toAdd);
-    }
+
+	public void addCommandListener(commandListener toAdd) {
+		listeners.add(toAdd);
+	}
 
 	private void addListeners(){
 		//add a Component listener to look of resize
@@ -80,16 +85,35 @@ public class Console {
 				//addLine(inputLine.getText(), Color.WHITE, true);//text for making it echo
 				lastCommand = inputLine.getText(); 
 				inputLine.setText("");
-				commandEntered();
+				synchronized (holder) {
+					holder.add(lastCommand);
+	                holder.notify();
+				}
+				//commandEntered();
 			}
 		});
 	}
 
 	private void commandEntered() {
 		for (commandListener hl : listeners)
-            hl.commandEntered();
+			hl.commandEntered();
 	} 
-		
+	
+	public String nextLine() {
+		synchronized (holder) {
+			while (holder.isEmpty())
+				try {
+					holder.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+	        String nextString = holder.remove(0);
+			return nextString;
+		}
+	}
+
 	private void createGui(){
 		//TODO make scroll bar look nice with synth look and feel and laf.xml
 		//SynthLookAndFeel laf = new SynthLookAndFeel();
@@ -142,7 +166,7 @@ public class Console {
 		scrollV.setForeground(Color.WHITE);
 		scrollV.setBackground(Color.BLACK);
 
-		
+
 		//Positioning of the scroll bar
 		layout.putConstraint(SpringLayout.EAST, scrollV, 0, SpringLayout.EAST, panel);
 		layout.putConstraint(SpringLayout.NORTH, scrollV, 0, SpringLayout.NORTH, panel);
@@ -186,20 +210,20 @@ public class Console {
 		}
 		drawHistory();
 	}
-	
+
 	public void println(Message msg){
 		historyList.add(msg);
 		drawHistory();
 	}
-	
+
 	public void println(String s){
 		historyList.add(new Message(s, Color.WHITE, new mFormat()));
 	}
-	
+
 	public void println(String s, Color c){
 		historyList.add(new Message(s, c, new mFormat()));
 	}
-	
+
 	public void drawHistory(){
 		if(historyList.size() > 50 ){
 			historyList.remove(0);
@@ -207,7 +231,7 @@ public class Console {
 		history.setText("");
 		for(Message ln : historyList){
 			for(mChar ch : ln.mCharList){
-				
+
 				StyleConstants.setBold(style, ch.format.bold);
 				StyleConstants.setItalic(style, ch.format.italic);
 				StyleConstants.setUnderline(style, ch.format.underline);
@@ -249,6 +273,12 @@ public class Console {
 
 	public void maximize(){
 		frame.setState(Frame.NORMAL);
+	}
+
+	@Override
+	public int read(CharBuffer cb) throws IOException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

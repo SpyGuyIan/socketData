@@ -18,6 +18,7 @@ public class Server {
 	public void init(int port) {
 		try {
 			server = new ServerSocket(port);// may not be port just an id number
+			System.out.println("Server initiated at port " + port);
 			s = server.accept();
 
 			out = new ObjectOutputStream(s.getOutputStream());
