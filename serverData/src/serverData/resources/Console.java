@@ -243,7 +243,7 @@ public class Console{
 	}
 
 	public void drawHistory(){
-		if(historyList.size() > 50 ){
+		if(historyList.size() > 100 ){
 			historyList.remove(0);
 		}
 		history.setText("");
@@ -299,13 +299,8 @@ public class Console{
 	private void updateTextPane(final String text) {
 		  SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
-		      Document doc = history.getDocument();
-		      try {
-		        doc.insertString(doc.getLength(), text, null);
-		      } catch (BadLocationException e) {
-		        throw new RuntimeException(e);
-		      }
-		      history.setCaretPosition(doc.getLength() - 1);
+		        addHistory(new Message(text, Color.RED, new mFormat()));
+		        drawHistory();
 		    }
 		  });
 		}
