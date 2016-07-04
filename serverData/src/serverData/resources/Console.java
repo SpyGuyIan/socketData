@@ -28,7 +28,6 @@ import javax.swing.JTextPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -118,6 +117,7 @@ public class Console{
 	
 	private void addHistory(Message msg) {
 		historyList.add(msg);
+		drawHistory();
 		try {
 			pw.println(msg.getText());
 		} catch(NullPointerException e) {}
@@ -223,7 +223,6 @@ public class Console{
 		}else{
 			addHistory(new Message(command, c, new mFormat()));
 		}
-		drawHistory();
 	}
 
 	public void println(Message msg, boolean usePrefix){
@@ -232,12 +231,10 @@ public class Console{
 		}else{
 			addHistory(msg);
 		}
-		drawHistory();
 	}
 
 	public void println(Message msg){
 		addHistory(msg);
-		drawHistory();
 	}
 
 	public void println(String s){
@@ -267,7 +264,6 @@ public class Console{
 			}
 			try { doc.insertString(doc.getLength(), "\n", style); }
 			catch (BadLocationException e){}
-
 		}
 	}
 
@@ -288,9 +284,9 @@ public class Console{
 	}
 
 	public void close(){
-		//try {
+		try {
 			pw.close();
-		//} catch(NullPointerException e) {}
+		} catch(NullPointerException e) {}
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 
@@ -306,7 +302,6 @@ public class Console{
 		  SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
 		      addHistory(new Message(text, Color.RED, new mFormat()));
-		      drawHistory();
 		    }
 		  });
 		}

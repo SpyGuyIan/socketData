@@ -8,10 +8,10 @@ public class Frame extends JFrame{
 	private static final long serialVersionUID = -7803629994015778818L;
 
 	public Frame() {
-		initiateUI();
+		createGUI();
 	}
 
-	private void initiateUI() {
+	private void createGUI() {
 
 		JPanel container = new JPanel();
 		JPanel yContainer1 = new JPanel();
@@ -46,11 +46,11 @@ public class Frame extends JFrame{
 		setTitle("Client");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
 	}
 	
 	public static void main(String[] args) {
-		Frame ex1 = new Frame();
-		ex1.setVisible(true);
+		new Frame();
 	}
 
 }

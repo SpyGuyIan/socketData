@@ -12,8 +12,7 @@ public class Server {
 
 	public Server() {}
 
-	public void init(int port) {
-		try {
+	public void init(int port) throws IOException {
 			server = new ServerSocket(port);// may not be port just an id number
 			System.out.println("Server initiated at port " + port);
 			s = server.accept();
@@ -24,18 +23,11 @@ public class Server {
 			System.out.println("Object Streams created");
 
 			System.out.println("Connected");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
-	public void sendString(String msg) {
-		try {
+	public void sendString(String msg) throws IOException {
 			out.writeObject(msg);
 			out.flush();
-		} catch (IOException ioException) {
-			ioException.printStackTrace();
-		}
 	}
 
 	public String readString() throws IOException {
@@ -43,7 +35,7 @@ public class Server {
 			return (String) in.readObject();
 		} catch (ClassNotFoundException classnot) {
 			System.err.println("Data received in unknown format");
-			return "Error";
+			return "Unknown";
 		} 
 
 	}

@@ -21,15 +21,14 @@ public class mainClass {
 		// port = input.nextInt();
 		// input.nextLine();
 		// input.close();
-		
-		console.println("Server opening...", Color.BLUE, false);
+		console.println("Server opening...", Color.BLUE);
 		console.println("Enter your name", Color.WHITE, true);
-		String name = console.inString();
-		console.println("Hello " + name + "!", Color.WHITE, true);
-		console.close();
+		//String name = console.inString();
+		//console.println("Hello " + name + "!", Color.WHITE, true);
+		//console.close();
 		
-		Server myServer = new Server();
-		myServer.init(port);
+		//Server myServer = new Server();
+		//myServer.init(port);
 //		
 //		try {
 //			if (myServer.readString() == "Ping!") {
