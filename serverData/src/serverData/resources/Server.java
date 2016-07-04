@@ -10,10 +10,7 @@ public class Server {
 	ServerSocket server;
 	Socket s;
 
-	public Server() {
-		System.out.println("Server init");
-
-	}
+	public Server() {}
 
 	public void init(int port) {
 		try {
@@ -29,7 +26,6 @@ public class Server {
 			System.out.println("Connected");
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("IOExeption error---");
 		}
 	}
 
@@ -37,7 +33,6 @@ public class Server {
 		try {
 			out.writeObject(msg);
 			out.flush();
-			System.out.println("Server> " + msg);
 		} catch (IOException ioException) {
 			ioException.printStackTrace();
 		}

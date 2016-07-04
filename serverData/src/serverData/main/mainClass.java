@@ -21,7 +21,7 @@ public class mainClass {
 		// port = input.nextInt();
 		// input.nextLine();
 		// input.close();
-
+		
 		console.println("Server opening...", Color.BLUE, false);
 		console.println("Enter your name", Color.WHITE, true);
 		String name = console.inString();

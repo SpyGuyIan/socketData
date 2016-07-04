@@ -244,7 +244,7 @@ public class Console{
 	}
 
 	public void drawHistory(){
-		if(historyList.size() > 50 ){
+		if(historyList.size() > 100 ){
 			historyList.remove(0);
 		}
 		history.setText("");
