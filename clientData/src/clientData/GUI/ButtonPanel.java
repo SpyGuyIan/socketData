@@ -14,16 +14,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class Panel2 extends JPanel {
+public class ButtonPanel extends JPanel {
 
 	private static final long serialVersionUID = 5509155261502497671L;
-	FrameBoxes myFrame;
-	private int screen;
 
-	public Panel2(FrameBoxes frame, int screenNumber) {
-		myFrame = frame;
-		screen = screenNumber;
+
+	public ButtonPanel() {
 	}
+
+
 	
 	
 	
