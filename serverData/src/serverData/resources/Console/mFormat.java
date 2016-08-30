@@ -1,4 +1,4 @@
-package serverData.resources;
+package serverData.resources.Console;
 
 class mFormat {
 	public boolean bold;
